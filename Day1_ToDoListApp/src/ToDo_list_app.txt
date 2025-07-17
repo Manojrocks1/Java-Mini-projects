@@ -1,0 +1,135 @@
+package Day1_ToDoListApp.src;
+
+import java.util.ArrayList;
+import java.util.Scanner;
+
+// Task class represents a single task in the to-do list
+class Task {
+    String name;    // Name/description of the task
+    boolean isDone; // Status indicating if the task is done
+
+    // Constructor initializes a new task with a given name and sets it as not done
+    Task(String name) {
+        this.name = name;
+        this.isDone = false; // default: task not done
+    }
+
+    // Mark the task as done
+    void markDone() {
+        isDone = true;
+    }
+
+    // Override toString to display the task with a status checkmark or empty box
+    @Override
+    public String toString() {
+        // If task is done show [✔] else show [ ]
+        return (isDone ? "[✔] " : "[ ] ") + name;
+    }
+}
+
+public class ToDoListApp {
+
+    static ArrayList<Task> tasks = new ArrayList<>(); // List to store tasks
+    static Scanner sc = new Scanner(System.in);       // Scanner for user input
+
+    public static void main(String[] args) {
+        int choice;
+
+        // Loop shows menu repeatedly until user chooses to exit
+        do {
+            System.out.println("\n--- ToDo List ---");
+            System.out.println("1. Add Task");
+            System.out.println("2. View Tasks");
+            System.out.println("3. Mark Task as Done");
+            System.out.println("4. Delete Task");
+            System.out.println("5. Exit");
+            System.out.print("Enter your choice(1 to 5): ");
+
+            choice = sc.nextInt();
+            sc.nextLine(); // Consume newline left-over
+
+            // Use switch expression (Java 14+) to call respective methods
+            switch (choice) {
+                case 1 -> addTask();
+                case 2 -> viewTasks();
+                case 3 -> markTaskDone();
+                case 4 -> deleteTask();
+                case 5 -> System.out.println("Thank you!"); // Exit message
+                default -> System.out.println("Invalid choice...!"); // Invalid input handling
+            }
+
+            // Loop until user enters 5 to exit
+        } while (choice != 5);
+
+        sc.close(); // Close Scanner resource before program termination
+    }
+
+    // Method to add a new task entered by the user
+    static void addTask() {
+        System.out.print("Enter task name: ");
+        String name = sc.nextLine();
+        tasks.add(new Task(name)); // Create new Task and add to list
+        System.out.println("Task added.");
+    }
+
+    // Method to display all tasks with their status
+    static void viewTasks() {
+        System.out.println("\nYour Tasks:");
+        if (tasks.isEmpty()) {
+            System.out.println("No tasks added."); // Show message if list is empty
+        } else {
+            // Loop over tasks and print index + task info
+            for (int i = 0; i < tasks.size(); i++) {
+                System.out.println((i + 1) + ". " + tasks.get(i));
+            }
+        }
+    }
+
+    // Method to mark a specified task as done
+    static void markTaskDone() {
+        viewTasks(); // Show all tasks first
+        System.out.print("Enter task number to mark as done: ");
+        int index = sc.nextInt() - 1; // Convert to zero-based index
+
+        // Validate index and mark done if valid
+        if (index >= 0 && index < tasks.size()) {
+            tasks.get(index).markDone();
+            System.out.println("Task marked as done.");
+        } else {
+            System.out.println("Invalid task number.");
+        }
+        sc.nextLine(); // Consume newline after nextInt()
+    }
+
+    // Method to delete a specified task
+    static void deleteTask() {
+        viewTasks(); // Show all tasks first
+        System.out.print("Enter task number to delete: ");
+        int index = sc.nextInt() - 1; // Convert to zero-based index
+
+        // Validate index and remove task if valid
+        if (index >= 0 && index < tasks.size()) {
+            tasks.remove(index);
+            System.out.println("Task deleted.");
+        } else {
+            System.out.println("Invalid task number.");
+        }
+        sc.nextLine(); // Consume newline after nextInt()
+    }
+}
+Explanation:
+Class Task:
+Represents individual tasks with name and completion status.
+Overrides toString() to nicely format task display with checkboxes.
+
+ArrayList<Task> tasks:
+Used to store all tasks dynamically.
+
+Menu-driven interaction in main:
+Repeatedly displays options and calls methods accordingly using new switch expression syntax.
+
+Scanner sc:
+For getting user input and navigating the menu.
+
+Helper methods:
+Provide separation of concerns — Adding, Viewing, Marking done, and Deleting tasks.
