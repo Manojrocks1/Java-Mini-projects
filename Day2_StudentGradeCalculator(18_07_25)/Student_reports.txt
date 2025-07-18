@@ -1,0 +1,8 @@
+--- STUDENT REPORT ---
+ID: S1456
+Name: Golla Manoj
+Total: 304
+Average: 60.8
+Grade: C
+----------------------
+

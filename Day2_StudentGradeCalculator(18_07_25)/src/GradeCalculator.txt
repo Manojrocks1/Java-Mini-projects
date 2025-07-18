@@ -1,0 +1,172 @@
+// Package declaration - can be omitted or changed based on project folder structure
+package Day2_StudentGradeCalculator.src;
+
+import java.util.*;
+import java.io.*;
+
+// -----------------------------
+// 🎓 Student Model Class
+// -----------------------------
+class Student {
+    String studentId, name;
+    int[] marks;           // Array to store subject marks
+    int total;             // Sum of marks
+    double average;        // Average of marks
+    String grade;          // Grade based on average
+
+    // ⚙️ Constructor: initializes all parameters and evaluates scores
+    public Student(String studentId, String name, int[] marks) {
+        this.studentId = studentId;
+        this.name = name;
+        this.marks = marks;
+        calculateTotal();
+        calculateAverage();
+        calculateGrade();
+    }
+
+    // ✅ Calculate total marks
+    void calculateTotal() {
+        total = Arrays.stream(marks).sum(); // Java 8+ stream for summing array
+    }
+
+    // ✅ Compute average score
+    void calculateAverage() {
+        average = total / (double) marks.length; // Cast to double for precision
+    }
+
+    // ✅ Determine grade based on average
+    void calculateGrade() {
+        if (average >= 90) grade = "A+";
+        else if (average >= 80) grade = "A";
+        else if (average >= 70) grade = "B";
+        else if (average >= 60) grade = "C";
+        else grade = "D";
+    }
+
+    // 🖨️ Display report on console
+    void printReport() {
+        System.out.printf("""
+                \n--- STUDENT REPORT ---
+                ID: %s
+                Name: %s
+                Total: %d
+                Average: %.2f
+                Grade: %s
+                """, studentId, name, total, average, grade);
+    }
+
+    // 💾 Format report as a string for saving to file
+    String toFileString() {
+        return String.format("""
+                --- STUDENT REPORT ---
+                ID: %s
+                Name: %s
+                Total: %d
+                Average: %.2f
+                Grade: %s
+                ----------------------
+
+                """, studentId, name, total, average, grade);
+    }
+}
+
+// -----------------------------
+// 📘 Main Application Class
+// -----------------------------
+public class AdvancedStudentReportCard {
+    
+    // 🧾 Configuration: Total number of subjects
+    static final int SUBJECTS = 5;
+
+    // 🎯 Scanner for user input and list to hold all students
+    static Scanner sc = new Scanner(System.in);
+    static List<Student> students = new ArrayList<>();
+
+    // 🚀 Main method: program entry point
+    public static void main(String[] args) {
+        System.out.println("📘 Welcome to the Student Report Card System");
+
+        while (true) {
+            // Input Student ID or exit condition
+            System.out.print("\nEnter Student ID (or type 'exit' to finish): ");
+            String id = sc.nextLine();
+            if (id.equalsIgnoreCase("exit")) break;
+
+            // Check if ID is already used
+            if (isDuplicateId(id)) {
+                System.out.println("⚠️ Student ID already exists.");
+                continue;
+            }
+
+            // Input student name
+            System.out.print("Enter Student Name: ");
+            String name = sc.nextLine();
+
+            // Input marks for defined subjects with validation
+            int[] marks = new int[SUBJECTS];
+            for (int i = 0; i < SUBJECTS; i++) {
+                marks[i] = inputValidMark(i + 1);
+            }
+
+            // Add validated and constructed Student object to list
+            students.add(new Student(id, name, marks));
+            System.out.println("✅ Student added.");
+        }
+
+        // Display report and save to a file
+        generateReports();
+    }
+
+    // 🛡️ Method to validate mark input between 0 and 100
+    static int inputValidMark(int subjectNo) {
+        while (true) {
+            System.out.print("Marks for Subject " + subjectNo + ": ");
+            try {
+                int mark = Integer.parseInt(sc.nextLine());
+                if (mark >= 0 && mark <= 100) return mark;
+            } catch (NumberFormatException ignored) { }
+            System.out.println("❌ Enter a number between 0 and 100.");
+        }
+    }
+
+    // 🔁 Check if Student ID already exists in list (case-insensitive)
+    static boolean isDuplicateId(String id) {
+        return students.stream().anyMatch(s -> s.studentId.equalsIgnoreCase(id));
+    }
+
+    // 🧾 Generate and print all reports + save to 'Student_reports.txt'
+    static void generateReports() {
+        if (students.isEmpty()) {
+            System.out.println("No student records to display.");
+            return;
+        }
+
+        // Try-with-resources: auto-closes FileWriter
+        try (FileWriter fw = new FileWriter("Student_reports.txt")) {
+            for (Student s : students) {
+                s.printReport();            // Print report to console
+                fw.write(s.toFileString()); // Write report to file
+            }
+            System.out.println("\n📁 All reports saved to 'Student_reports.txt'");
+        } catch (IOException e) {
+            System.out.println("⚠️ Error saving file: " + e.getMessage());
+        }
+    }
+}
+📝 Summary of Concepts Used
+Feature	Implemented With
+Student Object Model	Class Student
+List Management	ArrayList<Student>
+Grade Calculation	if-else with average
+Input Validation	try-catch, while loop, ID checking
+File Output	FileWriter for saving text reports
+Average Calculation	Arrays.stream() and division
+📁 Example Output in File: Student_reports.txt
+text
+--- STUDENT REPORT ---
+ID: ST123
+Name: Rahul
+Total: 432
+Average: 86.40
+Grade: A
+----------------------
