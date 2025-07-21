@@ -1,0 +1,318 @@
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class QuizApp {
+
+    // Define questions, options, and answers as constants for better readability and immutability
+    private static final String[] QUESTIONS = {
+            "1. What is the capital of France? 🤔",
+            "2. Which language is used for Android app development? 📱",
+            "3. Who is the father of Java programming language? 👨‍💻",
+            "4. Which data structure uses FIFO (First In First Out)? 📚",
+            "5. What does JVM stand for? 💻"
+    };
+
+    private static final String[][] OPTIONS = {
+            {"A. Berlin", "B. Paris", "C. Rome", "D. Madrid"},
+            {"A. Kotlin", "B. Python", "C. Swift", "D. JavaScript"},
+            {"A. James Gosling", "B. Dennis Ritchie", "C. Guido van Rossum", "D. Bjarne Stroustrup"},
+            {"A. Stack", "B. Queue", "C. Tree", "D. Graph"},
+            {"A. Java Variable Machine", "B. Java Visual Machine", "C. Java Virtual Machine", "D. Just Virtual Memory"}
+    };
+
+    private static final char[] ANSWERS = {'B', 'A', 'A', 'B', 'C'};
+
+    public static void main(String[] args) {
+        // Use try-with-resources for automatic Scanner closing
+        try (Scanner scanner = new Scanner(System.in)) {
+            runQuiz(scanner);
+        }
+    }
+
+    /**
+     * Orchestrates the quiz flow, including presenting questions, getting answers, and displaying results.
+     * @param scanner The Scanner object for user input.
+     */
+    private static void runQuiz(Scanner scanner) {
+        int score = 0;
+        int totalQuestions = QUESTIONS.length;
+
+        System.out.println("🌟 Welcome to the Java Quiz! 🌟\n");
+        System.out.println("Answer the following " + totalQuestions + " questions.\n");
+
+        for (int i = 0; i < totalQuestions; i++) {
+            presentQuestion(i);
+            char userAnswer = getUserAnswer(scanner);
+
+            if (checkAnswer(userAnswer, i)) {
+                System.out.println("🎉 Correct!\n");
+                score++;
+            } else {
+                System.out.println("❌ Wrong! The correct answer is " + ANSWERS[i] + ".\n");
+            }
+        }
+
+        displayResults(score, totalQuestions);
+    }
+
+    /**
+     * Presents a single question and its options to the user.
+     * @param questionIndex The index of the question to present.
+     */
+    private static void presentQuestion(int questionIndex) {
+        System.out.println(QUESTIONS[questionIndex]);
+        for (String option : OPTIONS[questionIndex]) {
+            System.out.println(option);
+        }
+        System.out.print("Your answer (A/B/C/D): ");
+    }
+
+    /**
+     * Gets and validates the user's answer. Handles invalid input.
+     * @param scanner The Scanner object for user input.
+     * @return The validated user's answer character.
+     */
+    private static char getUserAnswer(Scanner scanner) {
+        char userAnswer;
+        while (true) {
+            try {
+                String input = scanner.next().trim().toUpperCase();
+                if (input.length() == 1 && (input.charAt(0) >= 'A' && input.charAt(0) <= 'D')) {
+                    userAnswer = input.charAt(0);
+                    break; // Valid input, exit loop
+                } else {
+                    System.out.println("Invalid input. Please enter A, B, C, or D. 🧐");
+                    System.out.print("Your answer (A/B/C/D): ");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a single character (A, B, C, or D). 🧐");
+                scanner.next(); // Consume the invalid input
+                System.out.print("Your answer (A/B/C/D): ");
+            }
+        }
+        return userAnswer;
+    }
+
+    /**
+     * Checks if the user's answer is correct.
+     * @param userAnswer The character entered by the user.
+     * @param questionIndex The index of the current question.
+     * @return true if the answer is correct, false otherwise.
+     */
+    private static boolean checkAnswer(char userAnswer, int questionIndex) {
+        return userAnswer == ANSWERS[questionIndex];
+    }
+
+    /**
+     * Displays the final quiz results and provides feedback.
+     * @param score The user's total correct answers.
+     * @param totalQuestions The total number of questions.
+     */
+    private static void displayResults(int score, int totalQuestions) {
+        System.out.println("--- Quiz Results ---");
+        System.out.println("Your Score: " + score + "/" + totalQuestions + " ✅");
+        int percentage = (int) ((double) score / totalQuestions * 100); // Cast to double for accurate division
+        System.out.println("Percentage: " + percentage + "%");
+
+        String feedback;
+        if (percentage >= 80) {
+            feedback = "Excellent! Keep up the great work! ⭐";
+        } else if (percentage >= 50) {
+            feedback = "Good! You're on your way to mastery. 👍";
+        } else {
+            feedback = "Needs Improvement. Review the topics and try again! 💡";
+        }
+        System.out.println("Feedback: " + feedback);
+        System.out.println("\nThank you for playing! 👋");
+    }
+}
+
+Here are several ways to enhance your Java Quiz Application, focusing on improving its robustness, user experience, and code structure.
+
+Enhanced Quiz Application
+Java
+
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class QuizApp {
+
+    // Define questions, options, and answers as constants for better readability and immutability
+    private static final String[] QUESTIONS = {
+            "1. What is the capital of France? 🤔",
+            "2. Which language is used for Android app development? 📱",
+            "3. Who is the father of Java programming language? 👨‍💻",
+            "4. Which data structure uses FIFO (First In First Out)? 📚",
+            "5. What does JVM stand for? 💻"
+    };
+
+    private static final String[][] OPTIONS = {
+            {"A. Berlin", "B. Paris", "C. Rome", "D. Madrid"},
+            {"A. Kotlin", "B. Python", "C. Swift", "D. JavaScript"},
+            {"A. James Gosling", "B. Dennis Ritchie", "C. Guido van Rossum", "D. Bjarne Stroustrup"},
+            {"A. Stack", "B. Queue", "C. Tree", "D. Graph"},
+            {"A. Java Variable Machine", "B. Java Visual Machine", "C. Java Virtual Machine", "D. Just Virtual Memory"}
+    };
+
+    private static final char[] ANSWERS = {'B', 'A', 'A', 'B', 'C'};
+
+    public static void main(String[] args) {
+        // Use try-with-resources for automatic Scanner closing
+        try (Scanner scanner = new Scanner(System.in)) {
+            runQuiz(scanner);
+        }
+    }
+
+    /**
+     * Orchestrates the quiz flow, including presenting questions, getting answers, and displaying results.
+     * @param scanner The Scanner object for user input.
+     */
+    private static void runQuiz(Scanner scanner) {
+        int score = 0;
+        int totalQuestions = QUESTIONS.length;
+
+        System.out.println("🌟 Welcome to the Java Quiz! 🌟\n");
+        System.out.println("Answer the following " + totalQuestions + " questions.\n");
+
+        for (int i = 0; i < totalQuestions; i++) {
+            presentQuestion(i);
+            char userAnswer = getUserAnswer(scanner);
+
+            if (checkAnswer(userAnswer, i)) {
+                System.out.println("🎉 Correct!\n");
+                score++;
+            } else {
+                System.out.println("❌ Wrong! The correct answer is " + ANSWERS[i] + ".\n");
+            }
+        }
+
+        displayResults(score, totalQuestions);
+    }
+
+    /**
+     * Presents a single question and its options to the user.
+     * @param questionIndex The index of the question to present.
+     */
+    private static void presentQuestion(int questionIndex) {
+        System.out.println(QUESTIONS[questionIndex]);
+        for (String option : OPTIONS[questionIndex]) {
+            System.out.println(option);
+        }
+        System.out.print("Your answer (A/B/C/D): ");
+    }
+
+    /**
+     * Gets and validates the user's answer. Handles invalid input.
+     * @param scanner The Scanner object for user input.
+     * @return The validated user's answer character.
+     */
+    private static char getUserAnswer(Scanner scanner) {
+        char userAnswer;
+        while (true) {
+            try {
+                String input = scanner.next().trim().toUpperCase();
+                if (input.length() == 1 && (input.charAt(0) >= 'A' && input.charAt(0) <= 'D')) {
+                    userAnswer = input.charAt(0);
+                    break; // Valid input, exit loop
+                } else {
+                    System.out.println("Invalid input. Please enter A, B, C, or D. 🧐");
+                    System.out.print("Your answer (A/B/C/D): ");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a single character (A, B, C, or D). 🧐");
+                scanner.next(); // Consume the invalid input
+                System.out.print("Your answer (A/B/C/D): ");
+            }
+        }
+        return userAnswer;
+    }
+
+    /**
+     * Checks if the user's answer is correct.
+     * @param userAnswer The character entered by the user.
+     * @param questionIndex The index of the current question.
+     * @return true if the answer is correct, false otherwise.
+     */
+    private static boolean checkAnswer(char userAnswer, int questionIndex) {
+        return userAnswer == ANSWERS[questionIndex];
+    }
+
+    /**
+     * Displays the final quiz results and provides feedback.
+     * @param score The user's total correct answers.
+     * @param totalQuestions The total number of questions.
+     */
+    private static void displayResults(int score, int totalQuestions) {
+        System.out.println("--- Quiz Results ---");
+        System.out.println("Your Score: " + score + "/" + totalQuestions + " ✅");
+        int percentage = (int) ((double) score / totalQuestions * 100); // Cast to double for accurate division
+        System.out.println("Percentage: " + percentage + "%");
+
+        String feedback;
+        if (percentage >= 80) {
+            feedback = "Excellent! Keep up the great work! ⭐";
+        } else if (percentage >= 50) {
+            feedback = "Good! You're on your way to mastery. 👍";
+        } else {
+            feedback = "Needs Improvement. Review the topics and try again! 💡";
+        }
+        System.out.println("Feedback: " + feedback);
+        System.out.println("\nThank you for playing! 👋");
+    }
+}
+Explanation of Enhancements
+1. Constants for Quiz Data
+private static final: The questions, options, and answers arrays are now declared as private static final.
+
+private: Encapsulates the data within the QuizApp class.
+
+static: These arrays belong to the class, not to any specific instance of QuizApp. This is efficient as there's only one set of quiz data.
+
+final: Prevents accidental reassignment of these arrays, making them true constants. This improves code robustness and clarity.
+
+Renamed Variables: Renamed to QUESTIONS, OPTIONS, ANSWERS to follow the convention for constants (all uppercase).
+
+2. Improved Error Handling and Input Validation
+getUserAnswer(Scanner scanner) Method:
+
+Loop for Validation: Uses a while (true) loop to repeatedly prompt the user until valid input (A, B, C, or D) is received.
+
+trim() and toUpperCase(): scanner.next().trim().toUpperCase() handles leading/trailing whitespace and converts the input to uppercase, making the input case-insensitive (e.g., 'a' becomes 'A').
+
+Length Check: Ensures the input is a single character.
+
+Range Check: Verifies that the character is within 'A' and 'D'.
+
+InputMismatchException: Although scanner.next().charAt(0) doesn't directly throw InputMismatchException for non-character input (it might throw NoSuchElementException if no input is available, or StringIndexOutOfBoundsException if the string is empty), including a try-catch block for general input issues (like an empty line causing StringIndexOutOfBoundsException or future enhancements) makes the input reading more robust. For this specific case, scanner.next() itself can handle some malformed inputs better by trying to read the next token. The if condition input.length() == 1 is the primary guard.
+
+Informative Messages: Provides specific feedback to the user if their input is invalid.
+
+scanner.next() in Catch Block: If an InputMismatchException (or a similar issue that prevents scanner.next() from returning a valid string) occurs, scanner.next() is called to consume the invalid token, preventing an infinite loop of error messages.
+
+3. Modularization with Methods
+runQuiz(Scanner scanner): This new method encapsulates the core quiz logic. It makes the main method cleaner and easier to read.
+
+presentQuestion(int questionIndex): Handles displaying a single question and its options.
+
+checkAnswer(char userAnswer, int questionIndex): A dedicated method for comparing the user's answer with the correct answer. This improves readability and makes the logic clearer.
+
+displayResults(int score, int totalQuestions): Encapsulates the logic for calculating
+ and displaying the final score, percentage, and feedback.
+
+4. Resource Management (try-with-resources)
+ .try (Scanner scanner = new Scanner(System.in)): This construct automatically 
+closes the Scanner object when the try block is exited (either normally or due to an exception). This prevents resource leaks, which is a good practice for Closeable resources like Scanner.
+
+5. User Experience Enhancements
+ .Welcome and Farewell Messages: Added friendly messages at the start and end of
+ the quiz.
+ .Emojis: Incorporated relevant emojis (🤔, 📱, 👨‍💻, 📚, 💻, 🌟, 🎉, ❌, ✅, ⭐, 👍, 💡, 👋) to make the output more engaging and visually appealing.
+ .Clearer Prompts: Improved the prompt for user input.
+ .Detailed Feedback: The feedback messages are a bit more elaborate.
+ .Casting for Percentage Calculation: (int) ((double) score / totalQuestions * 100) ensures accurate floating-point division before casting to an integer, avoiding potential integer division truncation issues.
+ .Horizontal Lines: Added "--- Quiz Results ---" for better visual separation of results.
+
+6. Comments
+  .Added Javadoc-style comments for methods to explain their purpose, parameters,
+  and return values, enhancing code documentation.
+  .Inline comments explain specific enhancements.
