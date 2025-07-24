@@ -1,0 +1,91 @@
+public class BankAccountManager {
+    // Private field to store the account holder's name
+    private String accountHolder;
+
+    // Private field to store the current balance of the account
+    private double balance;
+
+    /**
+     * Constructor to initialize a new bank account with the account holder's name
+     * and an initial balance.
+     * 
+     * @param accountHolder  Name of the account holder
+     * @param initialBalance Initial amount deposited into the account (must be >= 0)
+     */
+    public BankAccountManager(String accountHolder, double initialBalance) {
+        this.accountHolder = accountHolder;
+        if (initialBalance >= 0) {
+            // If initial balance is non-negative, set it as the current balance
+            this.balance = initialBalance;
+        } else {
+            // If initial balance is negative, print error and set balance to zero
+            System.out.println("Initial balance can't be negative. Setting to 0.");
+            this.balance = 0;
+        }
+    }
+
+    /**
+     * Method to deposit a specified amount into the account.
+     * 
+     * @param amount Amount of money to deposit (must be > 0)
+     */
+    public void deposit(double amount) {
+        if (amount > 0) {
+            // Increase the balance by the deposit amount
+            balance += amount;
+            System.out.println("Deposited: $" + amount);
+        } else {
+            // Deposit amount is invalid if less than or equal to zero
+            System.out.println("Deposit amount must be positive.");
+        }
+    }
+
+    /**
+     * Method to withdraw a specified amount from the account.
+     * It checks for validity and sufficient balance before withdrawing.
+     * 
+     * @param amount Amount of money to withdraw (must be > 0 and <= balance)
+     */
+    public void withdraw(double amount) {
+        if (amount > 0 && amount <= balance) {
+            // Reduce the balance by the withdrawal amount
+            balance -= amount;
+            System.out.println("Withdrawn: $" + amount);
+        } else {
+            // Either withdrawal amount is invalid or balance is insufficient
+            System.out.println("Invalid amount or insufficient balance.");
+        }
+    }
+
+    /**
+     * Method to display the current account holder's name and balance.
+     */
+    public void displayBalance() {
+        System.out.println("Account Holder: " + accountHolder);
+        System.out.println("Current Balance: $" + balance);
+    }
+
+    /**
+     * Main method to create an instance of BankAccountManager and perform some
+     * test operations: deposit, withdraw, and display balance.
+     */
+    public static void main(String[] args) {
+        // Create a new bank account for "John Doe" with an initial balance of 1000
+        BankAccountManager account = new BankAccountManager("John Doe", 1000);
+
+        // Display the current balance
+        account.displayBalance();
+
+        // Deposit $500 to the account
+        account.deposit(500);
+
+        // Withdraw $200 from the account
+        account.withdraw(200);
+
+        // Attempt to withdraw $1500 (more than the current balance) - should fail
+        account.withdraw(1500);
+
+        // Display the final balance after transactions
+        account.displayBalance();
+    }
+}
